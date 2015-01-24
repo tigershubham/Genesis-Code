@@ -1,0 +1,160 @@
+echo # sample-code >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/tigershubham/sample-code.git
+git push -u origin master
+Hello Sir,
+
+<----Controller's code of insert data in db--->
+<?php
+
+class UserController extends Controller
+{
+    
+    /**
+     * This is the default 'index' action that is invoked
+     * when an action is not explicitly requested by users.
+     */
+    public function actionIndex()
+    { 
+        // renders the view file 'protected/views/site/index.php'
+        // using the default layout 'protected/views/layouts/main.php'
+        $model =new UserForm; 
+        if(isset($_POST['UserForm']))
+        {
+            $model->setAttributes( $_POST['UserForm'] );
+            if($model->save()){
+                Yii::app()->user->setFlash('contact','Information saved successfully.');
+            }
+        }
+                $this->render('/site/form', array('model'=>$model));
+    }            
+        
+    }
+    ?> 
+<!-----------------------------end of controller------------------------------->
+
+<----Model's code of insert data in db ,validation rules define in it.--->
+
+<?php
+
+/**
+ * ContactForm class.
+ * ContactForm is the data structure for keeping
+ * contact form data. It is used by the 'contact' action of 'SiteController'.
+ */
+class UserForm extends CActiveRecord 
+{
+    public $username;
+    public $email;
+    public $password;
+    public $address;
+    public $phone;
+    public $city;
+
+    /**
+     * Declares the validation rules.
+     */
+    public function rules()
+    {
+        return array(
+            // name, email, subject and body are required
+            array('username, email, password, address,phone,city', 'required'),
+            // email has to be a valid email address
+            array('email', 'email'),
+        
+        );
+    }
+
+      public function tableName() {
+                return 'users';
+        }
+
+}
+
+<!-----------------------------end of model------------------------------->
+
+<------------------------------view code ---------------------------------->
+
+<?php
+
+
+$this->pageTitle=Yii::app()->name . ' - Register here';
+$this->breadcrumbs=array(
+    'Register',
+);
+?>
+
+<h1>Register here</h1>
+
+<?php if(Yii::app()->user->hasFlash('contact')): ?>
+
+<div class="flash-success">
+    <?php echo Yii::app()->user->getFlash('contact'); ?>
+</div>
+
+<?php else: ?>
+
+<div class="form">
+
+<?php $form=$this->beginWidget('CActiveForm', array(
+    'id'=>'contact-form',
+    'enableClientValidation'=>true,
+    'clientOptions'=>array(
+        'validateOnSubmit'=>true,
+    ),
+)); ?>
+
+    <p class="note">Fields with <span class="required">*</span> are required.</p>
+
+    <?php echo $form->errorSummary($model); ?>
+
+    <div class="row">
+        <?php echo $form->labelEx($model,'Username'); ?>
+        <?php echo $form->textField($model,'username'); ?>
+        <?php echo $form->error($model,'username'); ?>
+    </div>
+
+    <div class="row">
+        <?php echo $form->labelEx($model,'email'); ?>
+        <?php echo $form->textField($model,'email'); ?>
+        <?php echo $form->error($model,'email'); ?>
+    </div>
+
+    <div class="row">
+        <?php echo $form->labelEx($model,'Password'); ?>
+        <?php echo $form->passwordField($model,'password'); ?>
+        <?php echo $form->error($model,'password'); ?>
+    </div>
+
+    <div class="row">
+        <?php echo $form->labelEx($model,'Address'); ?>
+        <?php echo $form->textField($model,'address'); ?>
+        <?php echo $form->error($model,'address'); ?>
+    </div>
+
+    <div class="row">
+        <?php echo $form->labelEx($model,'Phone'); ?>
+        <?php echo $form->textField($model,'phone'); ?>
+        <?php echo $form->error($model,'phone'); ?>
+    </div>
+
+    <div class="row">
+        <?php echo $form->labelEx($model,'City'); ?>
+        <?php echo $form->textField($model,'city'); ?>
+        <?php echo $form->error($model,'city'); ?>
+    </div>
+    
+
+    <div class="row buttons">
+        <?php echo CHtml::submitButton('Submit'); ?>
+    </div>
+
+<?php $this->endWidget(); ?>
+
+</div><!-- form -->
+
+<?php endif; ?>
+
+<-----------------------------------------------------end of view---------------------------->
